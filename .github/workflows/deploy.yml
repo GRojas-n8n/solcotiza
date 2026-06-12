@@ -1,0 +1,21 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: |
+          npm ci
+          npm run build
+      - name: Deploy a Hostinger
+        run: |
+          rsync -avz --delete ./dist/ usuario@hostinger:/public_html/
+        # Opciones según tu stack:
+        # VPS Hetzner: rsync + docker-compose up -d
+        # Coolify: solo conecta el repo, tiene auto-deploy
